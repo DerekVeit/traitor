@@ -1,10 +1,14 @@
 
 from dataclasses import dataclass
 
-def Traitable(subject):
-    subject._traits = []
-    subject.__getattr__ = employ_traits
-    return subject
+def Trait(subject):
+    if '_traits' not in subject.__dict__:
+        subject._traits = []
+        subject.__getattr__ = employ_traits
+    def wrapper(trait):
+        subject._traits.append(trait)
+        return trait
+    return wrapper
 
 
 def employ_traits(obj, attr):
@@ -17,23 +21,14 @@ def employ_traits(obj, attr):
                          (type(obj).__name__, attr))
 
 
-@Traitable
 @dataclass
 class Strings:
     strings: list[str]
 
 
-@Traitable
 @dataclass
 class Numbers:
     nums: list[int]
-
-
-def Trait(subject):
-    def wrapper(trait):
-        subject._traits.append(trait)
-        return trait
-    return wrapper
 
 
 @Trait(Strings)
