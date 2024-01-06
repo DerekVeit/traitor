@@ -21,7 +21,7 @@ def employ_traits(obj, attr):
                          (type(obj).__name__, attr))
 
 
-def Trait(cls):
+def trait(cls):
     cls.of = impl_for
     return cls
 
@@ -36,7 +36,7 @@ class Numbers:
     nums: list[int]
 
 
-@Trait
+@trait
 class Arrangement:
     def sorted(self):
         """
