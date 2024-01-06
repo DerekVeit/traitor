@@ -7,8 +7,10 @@ def impl_for(subject):
         subject.__getattr__ = employ_traits
     def wrapper(impl):
         subject._traits.append(impl)
-        return impl
+        return impl_for.traits[impl.__name__]
     return wrapper
+
+impl_for.traits = {}
 
 
 def employ_traits(obj, attr):
@@ -22,7 +24,7 @@ def employ_traits(obj, attr):
 
 
 def trait(cls):
-    cls.of = impl_for
+    impl_for.traits[cls.__name__] = cls
     return cls
 
 
@@ -44,14 +46,14 @@ class Arrangement:
         """
 
 
-@Arrangement.of(Strings)
-class impl:
+@impl_for(Strings)
+class Arrangement:
     def sorted(self):
         return sorted(self.strings)
 
 
-@Arrangement.of(Numbers)
-class impl:
+@impl_for(Numbers)
+class Arrangement:
     def sorted(self):
         return sorted(self.nums)
 
