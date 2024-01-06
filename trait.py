@@ -1,7 +1,7 @@
 
 from dataclasses import dataclass
 
-def impl(subject):
+def impl_for(subject):
     if '_traits' not in subject.__dict__:
         subject._traits = []
         subject.__getattr__ = employ_traits
@@ -31,13 +31,13 @@ class Numbers:
     nums: list[int]
 
 
-@impl(Strings)
+@impl_for(Strings)
 class Arrangement:
     def sorted(self):
         return sorted(self.strings)
 
 
-@impl(Numbers)
+@impl_for(Numbers)
 class Arrangement:
     def sorted(self):
         return sorted(self.nums)
