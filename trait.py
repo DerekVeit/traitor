@@ -3,10 +3,10 @@ from dataclasses import dataclass
 
 def impl_for(subject):
     if '_traits' not in subject.__dict__:
-        subject._traits = []
+        subject._traits = {}
         subject.__getattr__ = employ_traits
     def wrapper(trait):
-        subject._traits.append(trait)
+        subject._traits[trait.__name__] = trait
         return impl_for.traits[trait.__name__]
     return wrapper
 
@@ -14,7 +14,7 @@ impl_for.traits = {}
 
 
 def employ_traits(obj, attr):
-    for trait in obj._traits:
+    for trait in obj._traits.values():
         if attr in trait.__dict__:
             def method(*args, **kwargs):
                 return getattr(trait, attr)(obj, *args, **kwargs)
