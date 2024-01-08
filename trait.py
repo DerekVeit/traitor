@@ -5,19 +5,19 @@ def impl_for(subject):
     if '_traits' not in subject.__dict__:
         subject._traits = []
         subject.__getattr__ = employ_traits
-    def wrapper(impl):
-        subject._traits.append(impl)
-        return impl_for.traits[impl.__name__]
+    def wrapper(trait):
+        subject._traits.append(trait)
+        return impl_for.traits[trait.__name__]
     return wrapper
 
 impl_for.traits = {}
 
 
 def employ_traits(obj, attr):
-    for impl in obj._traits:
-        if attr in impl.__dict__:
+    for trait in obj._traits:
+        if attr in trait.__dict__:
             def method(*args, **kwargs):
-                return getattr(impl, attr)(obj, *args, **kwargs)
+                return getattr(trait, attr)(obj, *args, **kwargs)
             return method
     raise AttributeError('%r object has no attribute %r' %
                          (type(obj).__name__, attr))
