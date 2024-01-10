@@ -3,8 +3,8 @@ from dataclasses import dataclass
 
 import pytest
 
-from trait import impl_for
-from trait import trait
+from traitor import impl_for
+from traitor import trait
 
 
 
