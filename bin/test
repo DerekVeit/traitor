@@ -1,8 +1,0 @@
-#!/bin/bash
-
-command_path=$(readlink -f "$0")
-bin_dir=$(dirname "$command_path")
-project_root=$(dirname "$bin_dir")
-
-PYTHONPATH=$project_root/src python -i "$project_root"/tests/test_trait.py
-

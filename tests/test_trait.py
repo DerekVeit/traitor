@@ -1,8 +1,11 @@
 
+from dataclasses import dataclass
+
+import pytest
+
 from trait import impl_for
 from trait import trait
 
-from dataclasses import dataclass
 
 
 @dataclass
@@ -43,7 +46,6 @@ class Arrangement:
         return sorted(self.nums)
 
 
-
 @impl_for(Numbers)
 class Reversal:
     def sorted(self):
@@ -51,15 +53,18 @@ class Reversal:
 
 
 
-def main():
+def test_simple():
     lines = Strings('Ben Derek Carl Abe'.split())
-    for line in lines.sorted():
-        print(line)
+    assert lines.sorted() == ['Abe', 'Ben', 'Carl', 'Derek']
+
+
+def test_qualified():
     scores = Numbers([90, 84, 92, 87])
-    for number in scores.Arrangement.sorted():
-        print(number)
-    for number in scores.sorted():
-        print(number)
+    assert scores.Arrangement.sorted() == [84, 87, 90, 92]
 
 
-main()
+def test_unqualified():
+    scores = Numbers([90, 84, 92, 87])
+    with pytest.raises(AttributeError):
+        scores.sorted()
+

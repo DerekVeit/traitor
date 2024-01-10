@@ -3,3 +3,10 @@ name = "trait"
 authors = [{ name = "Derek Veit", email = "derek.veit.d@pm.me" }]
 license = "MIT"
 description = "Imitation of Rust's trait and impl"
+
+[tool.pytest.ini_options]
+pythonpath = "src"
+testpaths = "tests"
+addopts = [
+    "--import-mode=importlib",
+]
