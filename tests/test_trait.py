@@ -52,19 +52,26 @@ class Reversal:
         return reversed(sorted(self.nums))
 
 
+@pytest.fixture
+def lines():
+    return Strings('Ben Derek Carl Abe'.split())
 
-def test_simple():
-    lines = Strings('Ben Derek Carl Abe'.split())
+
+@pytest.fixture
+def scores():
+    return Numbers([90, 84, 92, 87])
+
+
+
+def test_simple(lines):
     assert lines.sorted() == ['Abe', 'Ben', 'Carl', 'Derek']
 
 
-def test_qualified():
-    scores = Numbers([90, 84, 92, 87])
+def test_qualified(scores):
     assert scores.Arrangement.sorted() == [84, 87, 90, 92]
 
 
-def test_unqualified():
-    scores = Numbers([90, 84, 92, 87])
+def test_unqualified(scores):
     with pytest.raises(AttributeError):
         scores.sorted()
 
