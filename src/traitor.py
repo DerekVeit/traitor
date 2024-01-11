@@ -44,7 +44,7 @@ def employ_traits(obj, attr):
             return getattr(impl, attr)(obj, *args, **kwargs)
         return method
     elif len(impls) > 1:
-        raise AttributeError('%r object has multiple traits defining attribute %r' %
+        raise AttributeError('%r object has attribute %r for multiple traits' %
                              (type(obj).__name__, attr))
 
     return obj._traitor_last_getattr(attr)
