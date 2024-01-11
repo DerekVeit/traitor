@@ -24,26 +24,26 @@ def default_getattr(obj, attr):
 
 def employ_traits(obj, attr):
     if attr in obj._traitor_traits:
-        trait = obj._traitor_traits[attr]
-        trait._objects.append(obj)
+        impl = obj._traitor_traits[attr]
+        impl._objects.append(obj)
         return obj
 
-    traits = []
+    impls = []
 
-    for trait_name, trait in obj._traitor_traits.items():
-        if attr in trait.__dict__:
-            traits.append((trait_name, trait))
-            if any(id(item) == id(obj) for item in trait._objects):
-                trait._objects = [item for item in trait._objects if id(item) != id(obj)]
-                traits = traits[-1:]
+    for trait_name, impl in obj._traitor_traits.items():
+        if attr in impl.__dict__:
+            impls.append((trait_name, impl))
+            if any(id(item) == id(obj) for item in impl._objects):
+                impl._objects = [item for item in impl._objects if id(item) != id(obj)]
+                impls = impls[-1:]
                 break
 
-    if len(traits) == 1:
-        trait_name, trait = traits[0]
+    if len(impls) == 1:
+        trait_name, impl = impls[0]
         def method(*args, **kwargs):
-            return getattr(trait, attr)(obj, *args, **kwargs)
+            return getattr(impl, attr)(obj, *args, **kwargs)
         return method
-    elif len(traits) > 1:
+    elif len(impls) > 1:
         raise AttributeError('%r object has multiple traits defining attribute %r' %
                              (type(obj).__name__, attr))
 
