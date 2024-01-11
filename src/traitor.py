@@ -50,7 +50,8 @@ def employ_traits(obj, attr):
     return obj._traitor_last_getattr(attr)
 
 
-def trait(cls):
-    impl_for.traits[cls.__name__] = cls
-    return cls
+def trait(trait):
+    trait_name = trait.__name__
+    impl_for.traits[trait_name] = trait
+    return trait
 
