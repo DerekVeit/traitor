@@ -7,9 +7,12 @@ def impl_for(subject):
         subject.__getattr__ = employ_traits
 
     def wrapper(impl):
+        trait_name = impl.__name__
+        trait = impl_for.traits[trait_name]
+
         impl._objects = []
         subject._traitor_traits[trait_name] = impl
-        return impl_for.traits[impl.__name__]
+        return trait
 
     return wrapper
 
