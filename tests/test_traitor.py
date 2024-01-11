@@ -115,7 +115,6 @@ def test_impl_for__ambiguous_method():
         def to_upper():
             "Return an uppercase value."
 
-    # act
     @impl_for(Label)
     class ToUpper:
         def to_upper(self):
@@ -196,7 +195,6 @@ def test_impl_for__unknown_attr():
         def to_upper():
             "Return an uppercase value."
 
-    # act
     @impl_for(Label)
     class ToUpper:
         def to_upper(self):
