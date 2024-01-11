@@ -6,10 +6,10 @@ def impl_for(subject):
         subject._traitor_last_getattr = subject.__dict__.get('__getattr__', default_getattr)
         subject.__getattr__ = employ_traits
 
-    def wrapper(trait):
-        trait._objects = []
-        subject._traitor_traits[trait.__name__] = trait
-        return impl_for.traits[trait.__name__]
+    def wrapper(impl):
+        impl._objects = []
+        subject._traitor_traits[trait_name] = impl
+        return impl_for.traits[impl.__name__]
 
     return wrapper
 
