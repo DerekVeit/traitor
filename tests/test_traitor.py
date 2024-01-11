@@ -186,3 +186,25 @@ def test_impl_for__special_subject(decorator):
     assert label.to_upper() == 'LETTERS'
 
 
+def test_impl_for__unknown_attr():
+    class Label:
+        def __init__(self, label):
+            self.label = label
+
+    @trait
+    class ToUpper:
+        def to_upper():
+            "Return an uppercase value."
+
+    # act
+    @impl_for(Label)
+    class ToUpper:
+        def to_upper(self):
+            return self.label.upper()
+
+    label = Label('letters')
+
+    with pytest.raises(AttributeError):
+        label.nonexistent
+
+
