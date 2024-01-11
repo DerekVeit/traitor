@@ -1,6 +1,9 @@
 
 import inspect
 
+from zope.interface import Interface
+from zope.interface.verify import verifyClass
+
 
 
 def impl_for(subject):
@@ -21,6 +24,9 @@ def impl_for(subject):
             trait = traits[trait_name]
         except KeyError:
             raise UnknownTrait('unknown trait {n!r}'.format(n=trait_name))
+
+        if issubclass(trait, Interface):
+            verifyClass(trait, impl, tentative=True)
 
         impl._objects = []
         subject._traitor_traits[trait_name] = impl

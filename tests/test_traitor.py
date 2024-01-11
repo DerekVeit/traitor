@@ -3,6 +3,8 @@ from dataclasses import dataclass
 
 from attrs import define
 import pytest
+from zope.interface import Interface
+from zope.interface import Invalid
 
 from traitor import impl_for
 from traitor import trait
@@ -243,4 +245,41 @@ def test_impl_for__getattr():
     assert label.to_upper() == 'LETTERS'
     assert label.original == 'from the original'
 
+
+def test_impl_for__interface():
+    class Label:
+        def __init__(self, label):
+            self.label = label
+
+    @trait
+    class ToUpper(Interface):
+        def to_upper():
+            "Return an uppercase value."
+
+    # act
+    @impl_for(Label)
+    class ToUpper:
+        def to_upper(self):
+            return self.label.upper()
+
+    label = Label('letters')
+
+    assert label.to_upper() == 'LETTERS'
+
+
+def test_impl_for__interface_reject():
+    class Label:
+        def __init__(self, label):
+            self.label = label
+
+    @trait
+    class ToUpper(Interface):
+        def to_upper():
+            "Return an uppercase value."
+
+    with pytest.raises(Invalid):
+        @impl_for(Label)
+        class ToUpper:
+            def to_lower(self):
+                return self.label.lower()
 
