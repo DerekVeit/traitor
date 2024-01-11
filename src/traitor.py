@@ -1,4 +1,7 @@
 
+import inspect
+
+
 
 def impl_for(subject):
     if '_traitor_traits' not in subject.__dict__:
@@ -6,18 +9,21 @@ def impl_for(subject):
         subject._traitor_last_getattr = subject.__dict__.get('__getattr__', default_getattr)
         subject.__getattr__ = employ_traits
 
+    traits = dict(
+        (k, v)
+        for k, v in inspect.stack()[1].frame.f_locals.items()
+        if hasattr(v, '_traitor_is_trait')
+    )
+
     def wrapper(impl):
         trait_name = impl.__name__
-        trait = impl_for.traits[trait_name]
+        trait = traits[trait_name]
 
         impl._objects = []
         subject._traitor_traits[trait_name] = impl
         return trait
 
     return wrapper
-
-
-impl_for.traits = {}
 
 
 def default_getattr(obj, attr):
@@ -54,7 +60,6 @@ def employ_traits(obj, attr):
 
 
 def trait(trait):
-    trait_name = trait.__name__
-    impl_for.traits[trait_name] = trait
+    trait._traitor_is_trait = True
     return trait
 

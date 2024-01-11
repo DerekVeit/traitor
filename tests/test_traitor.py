@@ -19,8 +19,7 @@ def test_trait__by_call():
 
     assert NewToUpper is ToUpper
     assert hasattr(ToUpper, 'to_upper')
-    assert 'ToUpper' in impl_for.traits
-    assert impl_for.traits['ToUpper'] is ToUpper
+    assert hasattr(ToUpper, '_traitor_is_trait')
 
 
 
@@ -33,8 +32,7 @@ def test_trait():
 
     assert ToUpper.__name__ == 'ToUpper'
     assert hasattr(ToUpper, 'to_upper')
-    assert 'ToUpper' in impl_for.traits
-    assert impl_for.traits['ToUpper'] is ToUpper
+    assert hasattr(ToUpper, '_traitor_is_trait')
 
 
 def test_impl_for__adds_method():
