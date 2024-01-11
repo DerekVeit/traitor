@@ -3,6 +3,7 @@
 def impl_for(subject):
     if '_traitor_traits' not in subject.__dict__:
         subject._traitor_traits = {}
+        subject._traitor_last_getattr = subject.__dict__.get('__getattr__', default_getattr)
         subject.__getattr__ = employ_traits
     def wrapper(trait):
         trait._objects = []
@@ -11,6 +12,11 @@ def impl_for(subject):
     return wrapper
 
 impl_for.traits = {}
+
+
+def default_getattr(obj, attr):
+    raise AttributeError('%r object has no attribute %r' %
+                         (type(obj).__name__, attr))
 
 
 def employ_traits(obj, attr):
@@ -34,8 +40,7 @@ def employ_traits(obj, attr):
     elif len(traits) > 1:
         raise AttributeError('%r object has multiple traits defining attribute %r' %
                              (type(obj).__name__, attr))
-    raise AttributeError('%r object has no attribute %r' %
-                         (type(obj).__name__, attr))
+    return obj._traitor_last_getattr(attr)
 
 
 def trait(cls):
