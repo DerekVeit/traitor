@@ -1,12 +1,12 @@
 
 
 def impl_for(subject):
-    if '_traits' not in subject.__dict__:
-        subject._traits = {}
+    if '_traitor_traits' not in subject.__dict__:
+        subject._traitor_traits = {}
         subject.__getattr__ = employ_traits
     def wrapper(trait):
         trait._objects = []
-        subject._traits[trait.__name__] = trait
+        subject._traitor_traits[trait.__name__] = trait
         return impl_for.traits[trait.__name__]
     return wrapper
 
@@ -14,12 +14,12 @@ impl_for.traits = {}
 
 
 def employ_traits(obj, attr):
-    if attr in obj._traits:
-        trait = obj._traits[attr]
+    if attr in obj._traitor_traits:
+        trait = obj._traitor_traits[attr]
         trait._objects.append(obj)
         return obj
     traits = []
-    for trait_name, trait in obj._traits.items():
+    for trait_name, trait in obj._traitor_traits.items():
         if attr in trait.__dict__:
             traits.append((trait_name, trait))
             if any(id(item) == id(obj) for item in trait._objects):
