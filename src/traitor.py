@@ -17,13 +17,22 @@ def impl_for(subject):
 
     def wrapper(impl):
         trait_name = impl.__name__
-        trait = traits[trait_name]
+        try:
+            trait = traits[trait_name]
+        except KeyError:
+            raise UnknownTrait('unknown trait {n!r}'.format(n=trait_name))
 
         impl._objects = []
         subject._traitor_traits[trait_name] = impl
         return trait
 
     return wrapper
+
+
+class UnknownTrait(Exception):
+    """
+    impl_for was called on a class whose name does not match a declared trait.
+    """
 
 
 def default_getattr(obj, attr):

@@ -6,6 +6,7 @@ import pytest
 
 from traitor import impl_for
 from traitor import trait
+from traitor import UnknownTrait
 
 
 
@@ -181,6 +182,18 @@ def test_impl_for__special_subject(decorator):
     label = Label('letters')
 
     assert label.to_upper() == 'LETTERS'
+
+
+def test_impl_for__unknown_trait():
+    class Label:
+        def __init__(self, label):
+            self.label = label
+
+    with pytest.raises(UnknownTrait):
+        @impl_for(Label)
+        class ToUpper:
+            def to_upper(self):
+                return self.label.upper()
 
 
 def test_impl_for__unknown_attr():
