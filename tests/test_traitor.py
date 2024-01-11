@@ -214,7 +214,7 @@ def test_impl_for__getattr():
             if attr == 'original':
                 return 'from the original'
             raise AttributeError('%r object has no attribute %r' %
-                                 (type(obj).__name__, attr))
+                                 (type(self).__name__, attr))
 
     @trait
     class ToUpper:
