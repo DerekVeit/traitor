@@ -6,6 +6,11 @@ from zope.interface.verify import verifyClass
 
 
 
+def trait(trait):
+    trait._traitor_is_trait = True
+    return trait
+
+
 def impl_for(subject):
     if '_traitor_traits' not in subject.__dict__:
         subject._traitor_traits = {}
@@ -70,9 +75,4 @@ def traits_getattr(obj, attr):
                              (type(obj).__name__, attr))
 
     return obj._traitor_last_getattr(attr)
-
-
-def trait(trait):
-    trait._traitor_is_trait = True
-    return trait
 
