@@ -260,6 +260,8 @@ def test_impl_for__getattr():
 
     assert label.to_upper() == 'LETTERS'
     assert label.original == 'from the original'
+    with pytest.raises(AttributeError):
+        label.nonexistent
 
 
 def test_impl_for__interface():
