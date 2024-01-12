@@ -12,18 +12,16 @@ def impl_for(subject):
         subject._traitor_last_getattr = subject.__dict__.get('__getattr__', default_getattr)
         subject.__getattr__ = employ_traits
 
-    traits = dict(
-        (k, v)
-        for k, v in inspect.stack()[1].frame.f_locals.items()
-        if hasattr(v, '_traitor_is_trait')
-    )
-
     def wrapper(impl):
         trait_name = impl.__name__
+
         try:
-            trait = traits[trait_name]
+            trait = inspect.stack()[1].frame.f_locals[trait_name]
         except KeyError:
             raise UnknownTrait('unknown trait {n!r}'.format(n=trait_name))
+
+        if not getattr(trait, '_traitor_is_trait', False):
+            raise UnknownTrait('{t!r} is not a trait'.format(t=trait))
 
         if issubclass(trait, Interface):
             verifyClass(trait, impl, tentative=True)

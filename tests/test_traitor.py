@@ -198,6 +198,22 @@ def test_impl_for__unknown_trait():
                 return self.label.upper()
 
 
+def test_impl_for__not_a_trait():
+    class Label:
+        def __init__(self, label):
+            self.label = label
+
+    class ToUpper:
+        def to_upper():
+            "Return an uppercase value."
+
+    with pytest.raises(UnknownTrait):
+        @impl_for(Label)
+        class ToUpper:
+            def to_upper(self):
+                return self.label.upper()
+
+
 def test_impl_for__unknown_attr():
     class Label:
         def __init__(self, label):
