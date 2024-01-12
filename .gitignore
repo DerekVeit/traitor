@@ -1,2 +1,6 @@
 *~
 *.sw?
+.python-version
+htmlcov
+__pycache__
+x
