@@ -20,8 +20,10 @@ def impl_for(subject):
     def wrapper(impl):
         trait_name = impl.__name__
 
+        calling_context = inspect.stack()[1].frame.f_locals
+
         try:
-            trait = inspect.stack()[1].frame.f_locals[trait_name]
+            trait = calling_context[trait_name]
         except KeyError:
             raise UnknownTrait('unknown trait {n!r}'.format(n=trait_name))
 
