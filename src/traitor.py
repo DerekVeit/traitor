@@ -10,7 +10,7 @@ def impl_for(subject):
     if '_traitor_traits' not in subject.__dict__:
         subject._traitor_traits = {}
         subject._traitor_last_getattr = subject.__dict__.get('__getattr__', default_getattr)
-        subject.__getattr__ = employ_traits
+        subject.__getattr__ = traits_getattr
 
     def wrapper(impl):
         trait_name = impl.__name__
@@ -44,7 +44,7 @@ def default_getattr(obj, attr):
                          (type(obj).__name__, attr))
 
 
-def employ_traits(obj, attr):
+def traits_getattr(obj, attr):
     if attr in obj._traitor_traits:
         impl = obj._traitor_traits[attr]
         impl._objects.append(obj)
