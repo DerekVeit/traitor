@@ -38,12 +38,6 @@ def impl_for(subject):
     return wrapper
 
 
-class UnknownTrait(Exception):
-    """
-    impl_for was called on a class whose name does not match a declared trait.
-    """
-
-
 def default_getattr(obj, attr):
     raise AttributeError('%r object has no attribute %r' %
                          (type(obj).__name__, attr))
@@ -75,4 +69,10 @@ def traits_getattr(obj, attr):
                              (type(obj).__name__, attr))
 
     return obj._traitor_last_getattr(attr)
+
+
+class UnknownTrait(Exception):
+    """
+    impl_for was called on a class whose name does not match a declared trait.
+    """
 
