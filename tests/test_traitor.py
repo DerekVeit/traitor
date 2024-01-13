@@ -301,3 +301,28 @@ def test_impl_for__interface_reject():
             def to_lower(self):
                 return self.label.lower()
 
+
+def test_impl_for__other_scope():
+    class Label:
+        def __init__(self, label):
+            self.label = label
+
+    @trait
+    class ToUpper:
+        def to_upper():
+            "Return an uppercase value."
+
+    def inner():
+        @impl_for(Label)
+        class ToUpper:
+            def to_upper(self):
+                return self.label.upper()
+
+        label = Label('letters')
+
+        return label.ToUpper.to_upper()
+
+    result = inner()
+
+    assert result == 'LETTERS'
+
