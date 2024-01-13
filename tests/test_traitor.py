@@ -7,7 +7,6 @@ from zope.interface import Interface
 from zope.interface import Invalid
 
 from traitor import impl
-from traitor import impl_for
 from traitor import trait
 from traitor import UnknownTrait
 
@@ -50,7 +49,7 @@ def test_impl_for__adds_method():
             "Return an uppercase value."
 
     # act
-    @impl_for(Label)
+    @impl.for_(Label)
     class ToUpper:
         def to_upper(self):
             return self.label.upper()
@@ -71,7 +70,7 @@ def test_impl_for__method_works():
             "Return an uppercase value."
 
     # act
-    @impl_for(Label)
+    @impl.for_(Label)
     class ToUpper:
         def to_upper(self):
             return self.label.upper()
@@ -92,7 +91,7 @@ def test_impl_for__qual_method_works():
             "Return an uppercase value."
 
     # act
-    @impl_for(Label)
+    @impl.for_(Label)
     class ToUpper:
         def to_upper(self):
             return self.label.upper()
@@ -117,12 +116,12 @@ def test_impl_for__ambiguous_method():
         def to_upper():
             "Return an uppercase value."
 
-    @impl_for(Label)
+    @impl.for_(Label)
     class ToUpper:
         def to_upper(self):
             return self.label.upper()
 
-    @impl_for(Label)
+    @impl.for_(Label)
     class Uppercase:
         def to_upper(self):
             return self.label.upper()
@@ -149,12 +148,12 @@ def test_impl_for__disambiguous_method():
             "Return an uppercase value."
 
     # act
-    @impl_for(Label)
+    @impl.for_(Label)
     class ToUpper:
         def to_upper(self):
             return self.label.upper()
 
-    @impl_for(Label)
+    @impl.for_(Label)
     class Uppercase:
         def to_upper(self):
             return 'Uppercase ' + self.label
@@ -177,7 +176,7 @@ def test_impl_for__special_subject(decorator):
             "Return an uppercase value."
 
     # act
-    @impl_for(Label)
+    @impl.for_(Label)
     class ToUpper:
         def to_upper(self):
             return self.label.upper()
@@ -193,7 +192,7 @@ def test_impl_for__unknown_trait():
             self.label = label
 
     with pytest.raises(UnknownTrait):
-        @impl_for(Label)
+        @impl.for_(Label)
         class ToUpper:
             def to_upper(self):
                 return self.label.upper()
@@ -209,7 +208,7 @@ def test_impl_for__not_a_trait():
             "Return an uppercase value."
 
     with pytest.raises(UnknownTrait):
-        @impl_for(Label)
+        @impl.for_(Label)
         class ToUpper:
             def to_upper(self):
                 return self.label.upper()
@@ -225,7 +224,7 @@ def test_impl_for__unknown_attr():
         def to_upper():
             "Return an uppercase value."
 
-    @impl_for(Label)
+    @impl.for_(Label)
     class ToUpper:
         def to_upper(self):
             return self.label.upper()
@@ -252,7 +251,7 @@ def test_impl_for__getattr():
             "Return an uppercase value."
 
     # act
-    @impl_for(Label)
+    @impl.for_(Label)
     class ToUpper:
         def to_upper(self):
             return self.label.upper()
@@ -276,7 +275,7 @@ def test_impl_for__interface():
             "Return an uppercase value."
 
     # act
-    @impl_for(Label)
+    @impl.for_(Label)
     class ToUpper:
         def to_upper(self):
             return self.label.upper()
@@ -297,7 +296,7 @@ def test_impl_for__interface_reject():
             "Return an uppercase value."
 
     with pytest.raises(Invalid):
-        @impl_for(Label)
+        @impl.for_(Label)
         class ToUpper:
             def to_lower(self):
                 return self.label.lower()
@@ -314,7 +313,7 @@ def test_impl_for__other_scope():
             "Return an uppercase value."
 
     def inner():
-        @impl_for(Label)
+        @impl.for_(Label)
         class ToUpper:
             def to_upper(self):
                 return self.label.upper()
@@ -378,7 +377,7 @@ def test_impl__and_impl_for():
         def to_upper(self):
             return self.label + ' -> upper'
 
-    @impl_for(Label)
+    @impl.for_(Label)
     class ToUpper:
         def to_upper(self):
             return self.label.upper()

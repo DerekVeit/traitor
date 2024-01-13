@@ -32,7 +32,7 @@ def impl(impl):
     return subject
 
 
-def impl_for(subject):
+def _impl_for(subject):
     if '_traitor_traits' not in subject.__dict__:
         subject._traitor_traits = {}
         subject._traitor_last_getattr = subject.__dict__.get('__getattr__', _default_getattr)
@@ -59,6 +59,9 @@ def impl_for(subject):
         return trait
 
     return wrapper
+
+
+impl.for_ = _impl_for
 
 
 def _default_getattr(obj, attr):
@@ -96,6 +99,6 @@ def _traits_getattr(obj, attr):
 
 class UnknownTrait(Exception):
     """
-    impl_for was called on a class whose name does not match a declared trait.
+    _impl_for was called on a class whose name does not match a declared trait.
     """
 
