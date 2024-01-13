@@ -14,7 +14,7 @@ def trait(trait):
 def impl_for(subject):
     if '_traitor_traits' not in subject.__dict__:
         subject._traitor_traits = {}
-        subject._traitor_last_getattr = subject.__dict__.get('__getattr__', default_getattr)
+        subject._traitor_last_getattr = subject.__dict__.get('__getattr__', _default_getattr)
         subject.__getattr__ = traits_getattr
 
     def wrapper(impl):
@@ -42,7 +42,7 @@ def impl_for(subject):
     return wrapper
 
 
-def default_getattr(obj, attr):
+def _default_getattr(obj, attr):
     raise AttributeError('%r object has no attribute %r' %
                          (type(obj).__name__, attr))
 
