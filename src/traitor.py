@@ -20,7 +20,9 @@ def impl_for(subject):
     def wrapper(impl):
         trait_name = impl.__name__
 
-        calling_context = inspect.stack()[1].frame.f_locals
+        calling_context = {}
+        for frame_info in inspect.stack()[:0:-1]:
+            calling_context.update(frame_info.frame.f_locals)
 
         try:
             trait = calling_context[trait_name]
