@@ -20,13 +20,11 @@ def impl_for(subject):
     def wrapper(impl):
         trait_name = impl.__name__
 
-        calling_context = {}
-        for frame_info in inspect.stack()[:0:-1]:
-            calling_context.update(frame_info.frame.f_locals)
-
-        try:
-            trait = calling_context[trait_name]
-        except KeyError:
+        for frame_info in inspect.stack()[1:]:
+            if trait_name in frame_info.frame.f_locals:
+                trait = frame_info.frame.f_locals[trait_name]
+                break
+        else:
             raise UnknownTrait('unknown trait {n!r}'.format(n=trait_name))
 
         if not getattr(trait, '_traitor_is_trait', False):
