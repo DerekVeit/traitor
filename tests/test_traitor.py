@@ -6,6 +6,7 @@ import pytest
 from zope.interface import Interface
 from zope.interface import Invalid
 
+from traitor import impl
 from traitor import impl_for
 from traitor import trait
 from traitor import UnknownTrait
@@ -325,4 +326,71 @@ def test_impl_for__other_scope():
     result = inner()
 
     assert result == 'LETTERS'
+
+
+def test_impl__adds_method():
+    class Label:
+        def __init__(self, label):
+            self.label = label
+
+    # act
+    @impl
+    class Label:
+        def to_upper(self):
+            return self.label.upper()
+
+    label = Label('letters')
+
+    assert hasattr(label, 'to_upper')
+
+
+def test_impl__method_works():
+    class Label:
+        def __init__(self, label):
+            self.label = label
+
+    # act
+    @impl
+    class Label:
+        def to_upper(self):
+            return self.label.upper()
+
+    label = Label('letters')
+
+    assert label.to_upper() == 'LETTERS'
+
+
+def test_impl__and_impl_for():
+    class Label:
+        def __init__(self, label):
+            self.label = label
+
+    @trait
+    class ToUpper:
+        def to_upper():
+            "Return an uppercase value."
+
+    # act
+    @impl
+    class Label:
+        def abbreviate(self):
+            return ''.join(word[0] + '.' for word in self.label.split())
+        def to_upper(self):
+            return self.label + ' -> upper'
+
+    @impl_for(Label)
+    class ToUpper:
+        def to_upper(self):
+            return self.label.upper()
+        def to_upper_with_emphasis(self):
+            return self.label.upper() + '!'
+
+    label = Label('letters')
+
+    assert label.abbreviate() == 'l.'
+    assert label.to_upper_with_emphasis() == 'LETTERS!'
+    assert label.ToUpper.to_upper() == 'LETTERS'
+    assert label.Label.to_upper() == 'letters -> upper'
+    with pytest.raises(AttributeError):
+        label.to_upper
 

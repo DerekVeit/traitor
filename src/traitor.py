@@ -11,6 +11,27 @@ def trait(trait):
     return trait
 
 
+def impl(impl):
+    subject_name = impl.__name__
+
+    for frame_info in inspect.stack()[1:]:
+        if subject_name in frame_info.frame.f_locals:
+            subject = frame_info.frame.f_locals[subject_name]
+            break
+    else:
+        raise UnknownTrait('unknown class {n!r}'.format(n=subject_name))
+
+    if '_traitor_traits' not in subject.__dict__:
+        subject._traitor_traits = {}
+        subject._traitor_last_getattr = subject.__dict__.get('__getattr__', _default_getattr)
+        subject.__getattr__ = _traits_getattr
+
+    impl._objects = []
+    subject._traitor_traits[subject_name] = impl
+
+    return subject
+
+
 def impl_for(subject):
     if '_traitor_traits' not in subject.__dict__:
         subject._traitor_traits = {}
