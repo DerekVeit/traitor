@@ -79,9 +79,12 @@ def _traits_getattr(obj, attr):
 
     if len(impls) == 1:
         trait_name, impl = impls[0]
-        def method(*args, **kwargs):
-            return getattr(impl, attr)(obj, *args, **kwargs)
-        return method
+        value = getattr(impl, attr)
+        if callable(value):
+            def method(*args, **kwargs):
+                return value(obj, *args, **kwargs)
+            return method
+        return value
     elif len(impls) > 1:
         raise AttributeError('%r object has attribute %r for multiple traits' %
                              (type(obj).__name__, attr))

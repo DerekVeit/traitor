@@ -38,6 +38,46 @@ def test_trait():
     assert hasattr(ToUpper, '_traitor_is_trait')
 
 
+def test_impl_of__adds_attr():
+    class Label:
+        def __init__(self, label):
+            self.label = label
+
+    @trait
+    @dataclass
+    class Color:
+        color: str
+
+    # act
+    @impl.of(Color)
+    class Label:
+        color = 'white'
+
+    label = Label('letters')
+
+    assert hasattr(label, 'color')
+
+
+def test_impl_of__attr_works():
+    class Label:
+        def __init__(self, label):
+            self.label = label
+
+    @trait
+    @dataclass
+    class Color:
+        color: str
+
+    # act
+    @impl.of(Color)
+    class Label:
+        color = 'white'
+
+    label = Label('letters')
+
+    assert label.color == 'white'
+
+
 def test_impl_of__adds_method():
     class Label:
         def __init__(self, label):
