@@ -12,9 +12,20 @@ def trait(trait):
 
 
 def impl(impl):
+    return _impl(impl, frame=2)
+
+
+def _impl(impl, frame=1, trait=None):
     subject_name = impl.__name__
 
-    for frame_info in inspect.stack()[1:]:
+    if trait is not None:
+        if issubclass(trait, Interface):
+            verifyClass(trait, impl, tentative=True)
+        trait_name = trait.__name__
+    else:
+        trait_name = subject_name
+
+    for frame_info in inspect.stack()[frame:]:
         if subject_name in frame_info.frame.f_locals:
             subject = frame_info.frame.f_locals[subject_name]
             break
@@ -27,7 +38,7 @@ def impl(impl):
         subject.__getattr__ = _traits_getattr
 
     impl._objects = []
-    subject._traitor_traits[subject_name] = impl
+    subject._traitor_traits[trait_name] = impl
 
     return subject
 
@@ -37,26 +48,7 @@ def _impl_of(trait):
         raise NotATrait('{t!r} is not a trait'.format(t=trait))
 
     def wrapper(impl):
-        if issubclass(trait, Interface):
-            verifyClass(trait, impl, tentative=True)
-
-        subject_name = impl.__name__
-
-        for frame_info in inspect.stack()[1:]:
-            if subject_name in frame_info.frame.f_locals:
-                subject = frame_info.frame.f_locals[subject_name]
-                break
-        else:
-            raise NameError('impl requires that {n!r} be previously defined'.format(n=subject_name))
-
-        if '_traitor_traits' not in subject.__dict__:
-            subject._traitor_traits = {}
-            subject._traitor_last_getattr = subject.__dict__.get('__getattr__', _default_getattr)
-            subject.__getattr__ = _traits_getattr
-
-        impl._objects = []
-        subject._traitor_traits[trait.__name__] = impl
-        return subject
+        return _impl(impl, trait=trait)
 
     return wrapper
 
