@@ -7,7 +7,7 @@ This library allows using this approach in Python.
 ## Example:
 
 ```python
-from traitor import trait, impl_for
+from traitor import trait, impl
 
 class Foo:
     def __init__(self, bar):
@@ -18,7 +18,7 @@ class Bazziness:
     def baz():
         "Give something bazzy."
 
-@impl_for(Foo)
+@impl.for_(Foo)
 class Bazziness:
     def baz(self):
         return f'BAZ {self.bar} BAZ'
@@ -47,7 +47,7 @@ assert some_foo.baz() == 'BAZ ok BAZ'
 * **impl** - a class implementing functionality for a type (e.g. a data class), possibly corresopnding to trait
   
   * Decorated with `@impl` to implement functionality of a type independently of a trait, or
-  * Decorated with `@impl_for` to implement a trait for a type.
+  * Decorated with `@impl.for_` to implement a trait for a type.
   * Defines actual behavior.
   * If the trait is a `zope.interface.Interface`, the impl will be validated against it.
 
@@ -81,7 +81,7 @@ In case a method name is part of more than one trait implemented for a data clas
 
 ```python
 from attrs import define
-from traitor import trait, impl_for
+from traitor import trait, impl
 
 # The data class:
 
@@ -105,7 +105,7 @@ class CharSorting:
 
 # Both traits implemented for Phrase:
 
-@impl_for(Phrase)
+@impl.for_(Phrase)
 class WordSorting:
     def sorted(self):
         return ' '.join(self._sorted())
@@ -114,7 +114,7 @@ class WordSorting:
     def _sorted(self):
         return sorted(self.text.split())
 
-@impl_for(Phrase)
+@impl.for_(Phrase)
 class CharSorting:
     def sorted(self):
         return ''.join(sorted(self.text))
@@ -137,9 +137,9 @@ assert title.CharSorting.sorted() == '   LPRTaaaeegggghimmnnorrstuu'
 
 The `@trait` decorator
 
-- Adds a `_traitor_is_trait` attribute to the decorated class, which the `@impl_for` decorator will look for.
+- Adds a `_traitor_is_trait` attribute to the decorated class, which the `@impl.for_` decorator will look for.
 
-The `@impl` or `@impl_for` decorator
+The `@impl` or `@impl.for_` decorator
 
 - Adds these attributes to the data class:
   
@@ -149,7 +149,7 @@ The `@impl` or `@impl_for` decorator
   
   - `__getattr__` : a method for accessing impl attributes, which, if it finds nothing, calls `_traitor_last_getattr`.
 
-- `@impl_for`
+- `@impl.for_`
   
   - Takes the data class as its argument.
   
