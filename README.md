@@ -18,8 +18,8 @@ class Bazziness:
     def baz():
         "Give something bazzy."
 
-@impl.for_(Foo)
-class Bazziness:
+@impl.of(Bazziness)
+class Foo:
     def baz(self):
         return f'BAZ {self.bar} BAZ'
 
@@ -47,7 +47,7 @@ assert some_foo.baz() == 'BAZ ok BAZ'
 * **impl** - a class implementing functionality for a type (e.g. a data class), possibly corresopnding to trait
   
   * Decorated with `@impl` to implement functionality of a type independently of a trait, or
-  * Decorated with `@impl.for_` to implement a trait for a type.
+  * Decorated with `@impl.of` to implement a trait for a type.
   * Defines actual behavior.
   * If the trait is a `zope.interface.Interface`, the impl will be validated against it.
 
@@ -105,8 +105,8 @@ class CharSorting:
 
 # Both traits implemented for Phrase:
 
-@impl.for_(Phrase)
-class WordSorting:
+@impl.of(WordSorting)
+class Phrase:
     def sorted(self):
         return ' '.join(self._sorted())
     def first(self):
@@ -114,8 +114,8 @@ class WordSorting:
     def _sorted(self):
         return sorted(self.text.split())
 
-@impl.for_(Phrase)
-class CharSorting:
+@impl.of(CharSorting)
+class Phrase:
     def sorted(self):
         return ''.join(sorted(self.text))
 
@@ -137,9 +137,11 @@ assert title.CharSorting.sorted() == '   LPRTaaaeegggghimmnnorrstuu'
 
 The `@trait` decorator
 
-- Adds a `_traitor_is_trait` attribute to the decorated class, which the `@impl.for_` decorator will look for.
+- Adds a `_traitor_is_trait` attribute to the decorated class, which the `@impl.of` decorator will look for.
 
-The `@impl` or `@impl.for_` decorator
+The `@impl` or `@impl.of` decorator
+
+- Finds the existing class with the name of the decorated class and treats it as the data class.
 
 - Adds these attributes to the data class:
   
@@ -149,18 +151,10 @@ The `@impl` or `@impl.for_` decorator
   
   - `__getattr__` : a method for accessing impl attributes, which, if it finds nothing, calls `_traitor_last_getattr`.
 
-- `@impl.for_`
-  
-  - Takes the data class as its argument.
-  
-  - Finds the trait class having the name of the decorated class and, if it is a `zope.interface.Interface`, validates the impl (the decorated class) against it.
-  
-  - Returns the trait class.
+- Returns the data class.
 
-- `@impl`
+- `@impl.of` also
   
-  - Finds the existing class having the name of the decorated class and treats this as the data class.
+  - Takes a trait as an argument.
   
-  - Returns the data class.
-  
-  
+  - If the trait is a `zope.interface.Interface`, validates the the decorated class against it.

@@ -19,7 +19,7 @@ def impl(impl):
             subject = frame_info.frame.f_locals[subject_name]
             break
     else:
-        raise UnknownTrait('unknown class {n!r}'.format(n=subject_name))
+        raise NameError('impl requires that {n!r} be previously defined'.format(n=subject_name))
 
     if '_traitor_traits' not in subject.__dict__:
         subject._traitor_traits = {}
@@ -32,36 +32,36 @@ def impl(impl):
     return subject
 
 
-def _impl_for(subject):
-    if '_traitor_traits' not in subject.__dict__:
-        subject._traitor_traits = {}
-        subject._traitor_last_getattr = subject.__dict__.get('__getattr__', _default_getattr)
-        subject.__getattr__ = _traits_getattr
+def _impl_of(trait):
+    if not getattr(trait, '_traitor_is_trait', False):
+        raise NotATrait('{t!r} is not a trait'.format(t=trait))
 
     def wrapper(impl):
-        trait_name = impl.__name__
-
-        for frame_info in inspect.stack()[1:]:
-            if trait_name in frame_info.frame.f_locals:
-                trait = frame_info.frame.f_locals[trait_name]
-                break
-        else:
-            raise UnknownTrait('unknown trait {n!r}'.format(n=trait_name))
-
-        if not getattr(trait, '_traitor_is_trait', False):
-            raise UnknownTrait('{t!r} is not a trait'.format(t=trait))
-
         if issubclass(trait, Interface):
             verifyClass(trait, impl, tentative=True)
 
+        subject_name = impl.__name__
+
+        for frame_info in inspect.stack()[1:]:
+            if subject_name in frame_info.frame.f_locals:
+                subject = frame_info.frame.f_locals[subject_name]
+                break
+        else:
+            raise NameError('impl requires that {n!r} be previously defined'.format(n=subject_name))
+
+        if '_traitor_traits' not in subject.__dict__:
+            subject._traitor_traits = {}
+            subject._traitor_last_getattr = subject.__dict__.get('__getattr__', _default_getattr)
+            subject.__getattr__ = _traits_getattr
+
         impl._objects = []
-        subject._traitor_traits[trait_name] = impl
-        return trait
+        subject._traitor_traits[trait.__name__] = impl
+        return subject
 
     return wrapper
 
 
-impl.for_ = _impl_for
+impl.of = _impl_of
 
 
 def _default_getattr(obj, attr):
@@ -97,8 +97,8 @@ def _traits_getattr(obj, attr):
     return obj._traitor_last_getattr(attr)
 
 
-class UnknownTrait(Exception):
+class NotATrait(Exception):
     """
-    _impl_for was called on a class whose name does not match a declared trait.
+    _impl_of was called with a class that is not a declared trait.
     """
 
