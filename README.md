@@ -34,20 +34,44 @@ assert some_foo.baz() == 'BAZ ok BAZ'
 * **data class** - a class for data
   
   * Would be a struct in Rust.
-  * Normally a class without public methods but can be any ordinary class.
-  * Does not need decoration, but `@dataclass` or [attrs](https://www.attrs.org) `@define` would be appropriate.
+  * May be a class without public methods but can be any ordinary class.
+  * Does not need decoration, but `@dataclass` or [attrs](https://www.attrs.org) `@define` might be appropriate.
+  * A "type" for which trait and impl might define behavior.
 
 * **trait** - a class defining an interface
   
   * Decorated with `@trait`.
-  * Defines abstract behavior.
-  * Can be defined as a `zope.interface.Interface` or similarly.
+  * Defines functionality that might be implemented for various types.
+  * Can (optionally) be defined as a `zope.interface.Interface` or similarly.
 
-* **impl** - a class defining the implementation of a trait for a data class
+* **impl** - a class implementing functionality for a type (e.g. a data class), possibly corresopnding to trait
   
-  * Decorated with `@impl_for`.
+  * Decorated with `@impl` to implement functionality of a type independently of a trait, or
+  * Decorated with `@impl_for` to implement a trait for a type.
   * Defines actual behavior.
   * If the trait is a `zope.interface.Interface`, the impl will be validated against it.
+
+## Inherent implementation
+
+The example *above* shows implementation of a trait.  We can also add implementation not based on a trait:
+
+```python
+from dataclasses import dataclass
+from traitor import impl
+
+@dataclass
+class Phrase:
+    text: str
+
+@impl
+class Phrase:
+    def sorted(self):
+        return ''.join(sorted(self.text))
+
+title = Phrase('The Rust Programming Language')
+
+assert title.sorted() == '   LPRTaaaeegggghimmnnorrstuu'
+```
 
 ## Multiple traits
 
@@ -115,7 +139,7 @@ The `@trait` decorator
 
 - Adds a `_traitor_is_trait` attribute to the decorated class, which the `@impl_for` decorator will look for.
 
-The `@impl_for` decorator
+The `@impl` or `@impl_for` decorator
 
 - Adds these attributes to the data class:
   
@@ -125,6 +149,18 @@ The `@impl_for` decorator
   
   - `__getattr__` : a method for accessing impl attributes, which, if it finds nothing, calls `_traitor_last_getattr`.
 
-- Finds the trait class having the name of the decorated class and, if it is a `zope.interface.Interface`, validates the impl (the decorated class) against it.
+- `@impl_for`
+  
+  - Takes the data class as its argument.
+  
+  - Finds the trait class having the name of the decorated class and, if it is a `zope.interface.Interface`, validates the impl (the decorated class) against it.
+  
+  - Returns the trait class.
 
-- Returns the *trait* class, so that the class definition of the impl, which has the same name, does not replace it in the current scope.
+- `@impl`
+  
+  - Finds the existing class having the name of the decorated class and treats this as the data class.
+  
+  - Returns the data class.
+  
+  
