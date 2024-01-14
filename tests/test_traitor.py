@@ -226,6 +226,19 @@ def test_impl_of__special_subject(decorator):
     assert label.to_upper() == 'LETTERS'
 
 
+def test_impl_of__no_data_class():
+    @trait
+    class ToUpper:
+        def to_upper():
+            "Return an uppercase value."
+
+    with pytest.raises(NameError):
+        @impl.of(ToUpper)
+        class Label:
+            def to_upper(self):
+                return self.label.upper()
+
+
 def test_impl_of__unknown_trait():
     class Label:
         def __init__(self, label):
