@@ -25,7 +25,7 @@ class Foo:
 
 some_foo = Foo('ok')
 
-assert some_foo.bar() == 'ok'
+assert some_foo.bar == 'ok'
 assert some_foo.baz() == 'BAZ ok BAZ'
 ```
 
