@@ -37,7 +37,6 @@ def _impl(impl, frame=1, trait=None):
         subject._traitor_last_getattr = subject.__dict__.get('__getattr__', _default_getattr)
         subject.__getattr__ = _traits_getattr
 
-    impl._objects = []
     subject._traitor_traits[trait_name] = impl
 
     return subject
@@ -64,18 +63,13 @@ def _default_getattr(obj, attr):
 def _traits_getattr(obj, attr):
     if attr in obj._traitor_traits:
         impl = obj._traitor_traits[attr]
-        impl._objects.append(obj)
-        return obj
+        return _Delegate(obj, attr, impl)
 
     impls = []
 
     for trait_name, impl in obj._traitor_traits.items():
         if attr in impl.__dict__:
             impls.append((trait_name, impl))
-            if any(id(item) == id(obj) for item in impl._objects):
-                impl._objects = [item for item in impl._objects if id(item) != id(obj)]
-                impls = impls[-1:]
-                break
 
     if len(impls) == 1:
         trait_name, impl = impls[0]
@@ -90,6 +84,21 @@ def _traits_getattr(obj, attr):
                              (type(obj).__name__, attr))
 
     return obj._traitor_last_getattr(attr)
+
+
+class _Delegate:
+    def __init__(self, obj, trait_name, impl):
+        self._obj = obj
+        self._trait_name = trait_name
+        self._impl = impl
+
+    def __getattr__(self, attr):
+        value = getattr(self._impl, attr)
+        if callable(value):
+            def method(*args, **kwargs):
+                return value(self._obj, *args, **kwargs)
+            return method
+        return value
 
 
 class NotATrait(Exception):
