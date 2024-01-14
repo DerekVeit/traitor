@@ -37,6 +37,9 @@ def _impl(impl, frame=1, trait=None):
         subject._traitor_last_getattr = subject.__dict__.get('__getattr__', _default_getattr)
         subject.__getattr__ = _traits_getattr
 
+    impl.__init__ = _impl_init
+    impl.__getattr__ = _impl_getattr
+
     subject._traitor_traits[trait_name] = impl
 
     return subject
@@ -63,7 +66,7 @@ def _default_getattr(obj, attr):
 def _traits_getattr(obj, attr):
     if attr in obj._traitor_traits:
         impl = obj._traitor_traits[attr]
-        return _Delegate(obj, attr, impl)
+        return impl(obj, attr)
 
     impls = []
 
@@ -86,19 +89,13 @@ def _traits_getattr(obj, attr):
     return obj._traitor_last_getattr(attr)
 
 
-class _Delegate:
-    def __init__(self, obj, trait_name, impl):
-        self._obj = obj
-        self._trait_name = trait_name
-        self._impl = impl
+def _impl_init(obj, original, trait_name):
+    obj._original = original
+    obj._trait_name = trait_name
 
-    def __getattr__(self, attr):
-        value = getattr(self._impl, attr)
-        if callable(value):
-            def method(*args, **kwargs):
-                return value(self._obj, *args, **kwargs)
-            return method
-        return value
+
+def _impl_getattr(obj, attr):
+    return getattr(obj._original, attr)
 
 
 class NotATrait(Exception):
