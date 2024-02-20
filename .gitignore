@@ -1,5 +1,6 @@
 *~
 *.sw?
+.coverage
 .python-version
 htmlcov
 __pycache__
