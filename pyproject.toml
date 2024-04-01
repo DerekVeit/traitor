@@ -3,6 +3,9 @@ name = "traitor"
 authors = [{ name = "Derek Veit", email = "derek.veit.d@pm.me" }]
 license = "MIT"
 description = "Imitation of Rust's trait and impl"
+dependencies = [
+  "zope.interface",
+]
 
 [tool.pytest.ini_options]
 pythonpath = "src"
