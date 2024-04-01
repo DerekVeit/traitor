@@ -1,8 +1,9 @@
 [project]
 name = "traitor"
 authors = [{ name = "Derek Veit", email = "derek.veit.d@pm.me" }]
-license = "MIT"
 readme = "README.md"
+license = {file = "LICENSE"}
+classifiers = ["License :: OSI Approved :: MIT License"]
 description = "Imitation of Rust's trait and impl"
 dependencies = [
   "zope.interface",
