@@ -157,4 +157,4 @@ The `@impl` or `@impl.of` decorator
   
   - Takes a trait as an argument.
   
-  - If the trait is a `zope.interface.Interface`, validates the the decorated class against it.
+  - If the trait is a `zope.interface.Interface`, validates the decorated class against it.
