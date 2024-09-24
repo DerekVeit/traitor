@@ -1,4 +1,4 @@
-# traitor - Imitation of Rust's trait and impl
+# traitor - trait and impl for Python
 
 The Python language provides the common abstraction of a class, which combines a data structure and behavior related to it.  The Rust language takes a different approach, with a "struct" for a data structure and an "impl" for behavior.  Another Rust feature, a "trait", defines only the interface of a behavior, which might be useful for a variety of structs but implemented differently for each one.  The implementation of a trait for a struct is an impl.
 
