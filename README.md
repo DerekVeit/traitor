@@ -44,7 +44,7 @@ assert some_foo.baz() == 'BAZ ok BAZ'
   * Defines functionality that might be implemented for various types.
   * Can (optionally) be defined as a `zope.interface.Interface` or similarly.
 
-* **impl** - a class implementing functionality for a type (e.g. a data class), possibly corresopnding to trait
+* **impl** - a class implementing functionality for a type (e.g. a data class), possibly corresopnding to a trait
   
   * Decorated with `@impl` to implement functionality of a type independently of a trait, or
   * Decorated with `@impl.of` to implement a trait for a type.
