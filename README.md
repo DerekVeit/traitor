@@ -33,15 +33,15 @@ assert some_foo.baz() == 'BAZ ok BAZ'
 
 * **data class** - a class for data
   
-  * Would be a struct in Rust.
-  * May be a class without public methods but can be any ordinary class.
+  * Can be any ordinary class.
+  * A type for which `impl` might define behavior.
   * Does not need decoration, but `@dataclass` or [attrs](https://www.attrs.org) `@define` might be appropriate.
-  * A "type" for which trait and impl might define behavior.
+  * Corresponds to the struct in the Rust comparison.
 
 * **trait** - a class defining an interface
   
   * Decorated with `@trait`.
-  * Defines functionality that might be implemented for various types.
+  * Defines an interface that might be implemented differently for various types.
   * Can (optionally) be defined as a `zope.interface.Interface` or similarly.
 
 * **impl** - a class implementing functionality for a type (e.g. a data class), possibly corresopnding to a trait
